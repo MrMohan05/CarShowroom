@@ -1,33 +1,29 @@
 package DB;
 import java.time.LocalDate;
-
 import businessLogic.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JOptionPane;
 public class dbHandler {
-
 	private String username = "root";
 	private String pass = "vcpkf2021";
-	Connection con; // connection object
+	Connection con; 
 	Integer consumprate[]= {0,0,0,0,0,0,0,0,0,0};
-	
-	public dbHandler() { // default constructor
+	public dbHandler() { 
 
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/carshowroom", username, pass);
 			System.out.println("Connection made to DB");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
 			System.out.println("Connection failed!");
 			e.printStackTrace();
 		}
 
 	}
 	
-	public void addUser(int usid, String name, String emID, String pwd, String info)//pass user object here
+	public void addUser(int usid, String name, String emID, String pwd, String info)
 	{
 		try {
 			String query= "insert into users (UserID, Name, EmailID, Password, ContactInformation) values(?,?,?,?,?)";
@@ -56,9 +52,8 @@ public class dbHandler {
 		
 	}
 	
-	//for Invoice ids
 	public int getLastUsedInvoiceIDFromDatabase() {
-        int lastUsedID = 0;  // Default value if no ID is found
+        int lastUsedID = 0; 
 
         try {
             String query = "SELECT MAX(InvoiceID) FROM Invoice";  
@@ -78,9 +73,9 @@ public class dbHandler {
         return lastUsedID;
     }
 	
-	//for order ids
+
 	public int getLastUsedOrderIDFromDatabase(){
-		int lastUsedID = 0;  // Default value if no ID is found
+		int lastUsedID = 0;
 
         try {
             String query = "SELECT MAX(OrderID) FROM purchaseOrder";  
@@ -193,7 +188,6 @@ public class dbHandler {
                 catch (SQLException e) {
                     e.printStackTrace();
                     System.out.println("Failed to fetch user data");
-                    // Handle any exceptions that may occur during database access
                 }
 			
 			return User;
@@ -247,7 +241,6 @@ public class dbHandler {
 			catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Failed to add car in inventory");
-                // Handle any exceptions that may occur during database access
             }
 			
 			
@@ -278,14 +271,12 @@ public class dbHandler {
 			catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Failed to add car");
-                // Handle any exceptions that may occur during database access
             }
 		
 			
 		}
 
 		public void removeCarinDB(String vin) {
-			// TODO Auto-generated method stub
 			String query="DELETE FROM car WHERE vin = ?";
 			 
 			try{
@@ -331,7 +322,6 @@ public class dbHandler {
 
 		public void updateCarInfo(String vin, String make, String model, int year, String color, double mileage,
 				double price, String status) {
-			// TODO Auto-generated method stub
 			
 			String updateQuery = "UPDATE car SET make=?, model=?, year=?, price=?, mileage=?, color=? WHERE vin=?";
             try (PreparedStatement preparedStatement = con.prepareStatement(updateQuery)) {
@@ -360,7 +350,6 @@ public class dbHandler {
 		}
 
 		public void storeInvoice(Invoice invoice) {
-			// TODO Auto-generated method stub
 			String insertQuery = "INSERT INTO Invoice (Invoice_id, order_id, customer_id, tax, price, total_amount, date, terms_and_conditions) VALUES (?, ?, ?, ?, ?, ?, ?,?)";
             try (PreparedStatement preparedStatement = con.prepareStatement(insertQuery)) {
             	preparedStatement.setInt(1, invoice.getInvoiceId());
@@ -377,7 +366,6 @@ public class dbHandler {
             
          catch (SQLException e) {
             e.printStackTrace();
-            // Handle the exception, e.g., log or throw a custom exception
         }
 					
 	}
@@ -393,25 +381,20 @@ public class dbHandler {
 	                {
 	                    if (resultSet.next()) 
 	                    {
-	                        itemDetails = resultSet.getString("item_details");
-	                        
-	                        //itemDetailsTextArea.setText("Item Details:\n" + itemDetails);    
+	                        itemDetails = resultSet.getString("item_details");   
 	                    } 
 	                    else
 	                    {
-	                        //itemDetailsTextArea.setText("Customer didnot buy any car.");
 	                    }
 	                }
 	                catch (SQLException ex)
 	                {
 	    	            ex.printStackTrace();
-	    	            //itemDetailsTextArea.setText("Error connecting to the database.");
 	    	        }
 	            }
 	        
 	            catch (SQLException ex) {
 	            ex.printStackTrace();
-	            //itemDetailsTextArea.setText("Error connecting to the database.");
 	        }
 	            
 				
@@ -426,7 +409,7 @@ public class dbHandler {
 	            try (PreparedStatement preparedStatement = con.prepareStatement(insertQuery)) {
 	                preparedStatement.setInt(1, purchaseOrder.getOrderID());
 	                preparedStatement.setInt(2, purchaseOrder.getCustomerID());
-	                preparedStatement.setDate(3, new Date(purchaseOrder.getDate().getTime())); // Assuming purchaseOrder.getDate() returns a java.util.Date
+	                preparedStatement.setDate(3, new Date(purchaseOrder.getDate().getTime())); 
 	                preparedStatement.setString(4, purchaseOrder.getVIN());
 	                preparedStatement.setString(5, purchaseOrder.getComments());
 	                preparedStatement.setString(6, purchaseOrder.getStatus());
@@ -436,7 +419,6 @@ public class dbHandler {
 	            
 	         catch (SQLException e) {
 	            e.printStackTrace();
-	            // Handle the exception
 	        }
 	    }
 	    
@@ -448,8 +430,6 @@ public class dbHandler {
 	            try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
 	                preparedStatement.setString(1, testdrive.getVIN());
 	                preparedStatement.setInt(2, testdrive.getCustomerID());
-	              //  preparedStatement.setDate(3, java.sql.Date.valueOf(dateTextField.getText()));
-	               // preparedStatement.setTime(4, java.sql.Time.valueOf(timeTextField.getText()));
 	                java.sql.Date sqlDate = new java.sql.Date(testdrive.getDate().getTime());
 	                preparedStatement.setDate(3, sqlDate);
 	                
@@ -477,9 +457,6 @@ public class dbHandler {
 	    }
 
 		public void saveService(ServiceSchedule service) {
-			
-			
-			// TODO Auto-generated method stub
 	        String query = "INSERT INTO ServiceSchedule (VIN, ServiceType, Date, Status, Comments) " +
 	                "VALUES (?, ?, ?, ?, ?)";
 
@@ -512,8 +489,7 @@ public class dbHandler {
 		}
 
 		public int getNextTransID() {
-			// TODO Auto-generated method stub
-			int lastUsedID = 0;  // Default value if no ID is found
+			int lastUsedID = 0;  
 
 	        try {
 	            String query = "SELECT MAX(TransactionID) FROM payment";  
@@ -535,7 +511,6 @@ public class dbHandler {
 		}
 
 		public void storeCash(Cash cash) {
-			// TODO Auto-generated method stub
 	        
 	        String query3 = "INSERT INTO Payment (TransactionID, InvoiceID, CustomerID, Amount, Status, PaymentDate) " +
 	                "VALUES (?, ?, ?, ?, ?, ?)";
@@ -597,10 +572,7 @@ public class dbHandler {
 	        catch (SQLException e) 
 	        {
 	        e.printStackTrace();
-	       }
-			
-			
-			
+	       }	
 			String query1 = "INSERT INTO cash (TransactionID, AccountNumber, PIN, Bank) " +
 	                "VALUES (?, ?, ?, ?)";
 
@@ -626,10 +598,7 @@ public class dbHandler {
 	        catch (SQLException e) 
 	        {
 	        e.printStackTrace();
-	       }
-			
-
-			
+	       }	
 		}
 
 		public void storeCard(CreditCard card) {
@@ -724,11 +693,6 @@ public class dbHandler {
 	        {
 	        e.printStackTrace();
 	       }
-			
-		
-
-
-			
 		}	
 }
 	    
